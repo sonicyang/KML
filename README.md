@@ -1,4 +1,44 @@
 # Introduction
+
+## TL; DR How to apply
+
+This patch is based on Linux 4.4.12 with PREEMPT_RT.
+You need to prepare that before applying.
+
+```shell-session
+# 0. Clone this repository
+git clone git@github.com:sonicyang/KML.git
+
+# 1. Clone Linux 4.4.12
+git clone -b v4.4.12 --depth 1 git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+
+# You will get a copy of Linux 4.4.12 source in directory linux
+
+# 2. Download PREEMPT_RT patch
+wget https://cdn.kernel.org/pub/linux/kernel/projects/rt/4.4/older/patch-4.4.12-rt18.patch.xz
+
+# You will get a file patch-4.4.12-rt18.patch.xz
+
+# 3. Apply the PREEMPT_RT patch
+cd linux
+xzcat ../patch-4.4.12-rt18.patch.xz | patch -p1
+
+# You will have a modified Linux 4.4.12 source with PREEMPT_RT, now.
+
+# 4. Commit the the changes at once (Otherwise, git am will fail)
+git add .
+git commit -m "Apply PREEMPT_RT"
+
+# Now you should have a clean git repository without unstaged changes
+
+# 5. Apply these 2 patches
+cp ../KML/*.patch .
+git am *.patch
+
+# You are good to go
+# Compile the kernel then you should be able to use KML
+```
+
 ## KML
 Kernel-Mode Linux is a technology which enables us to execute user programs in kernel mode. In Kernel Mode Linux, user programs can be executed as user processes that have the privilege level of kernel mode. The benefit of executing user programs in kernel mode is that the user programs can access kernel address space directly. For example, user programs can invoke system calls very fast because it is unnecessary to switch between a kernel mode and user-mode by using costly software interruptions or context switches. In addition, user programs are executed as ordinary processes (except for their privilege level, of course), so scheduling and paging are performed as usual, unlike kernel modules. With this technology, we can implement the real time task in user space with advantages of flexibility and low latency.
 
